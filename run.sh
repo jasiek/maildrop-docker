@@ -15,3 +15,5 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
+cd maildrop-master/web
+./activator start

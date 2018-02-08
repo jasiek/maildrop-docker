@@ -8,7 +8,7 @@ RUN echo 'addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")' > project/as
 RUN sbt assembly
 WORKDIR /maildrop/maildrop-master/web
 RUN echo 'addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")' > project/assembly.sbt
-RUN sbt assembly
+RUN chmod a+x activator && ./activator dist
 WORKDIR /maildrop
 
 # redis
@@ -18,3 +18,7 @@ RUN apt-get install -y redis-server
 # Finishing touches
 COPY run.sh /maildrop
 CMD ./run.sh
+
+EXPOSE 25000
+EXPOSE 9000
+VOLUME /var/lib/redis
