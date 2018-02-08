@@ -4,7 +4,17 @@ RUN mkdir /maildrop
 WORKDIR /maildrop
 RUN wget -qO- https://github.com/m242/maildrop/archive/master.zip | jar xvf /dev/stdin
 WORKDIR /maildrop/maildrop-master/smtp
-RUN sbt compile
+RUN echo 'addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")' > project/assembly.sbt
+RUN sbt assembly
 WORKDIR /maildrop/maildrop-master/web
-RUN chmod a+x activator
-RUN ./activator dist
+RUN echo 'addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")' > project/assembly.sbt
+RUN sbt assembly
+WORKDIR /maildrop
+
+# redis
+RUN apt-get update
+RUN apt-get install -y redis-server
+
+# Finishing touches
+COPY run.sh /maildrop
+CMD ./run.sh
