@@ -1,0 +1,28 @@
+@(mimemessage: javax.mail.internet.MimeMessage)
+@parts = @{ Application.getParts(mimemessage) }
+@hasHtml = @{ mimemessage.isMimeType("text/html") || (mimemessage.isMimeType("multipart/*") && parts.exists(_.isMimeType("text/html"))) }
+
+<!DOCTYPE html>
+
+<link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/maildrop.min.css")">
+
+
+@if(mimemessage.isMimeType("multipart/*")) {
+	@for(part <- parts) {
+		<div>
+		@if(part.isMimeType("text/html")) {
+			@Html(part.getContent.asInstanceOf[String])
+		} else {
+			@if(!hasHtml && part.isMimeType("text/*")) {
+				<pre id="msgpre">@part.getContent.asInstanceOf[String]</pre>
+			}
+		}
+		</div>
+	}
+} else {
+	@if(mimemessage.isMimeType("text/html")) {
+		@Html(mimemessage.getContent.asInstanceOf[String])
+	} else {
+		<pre id="msgpre">@mimemessage.getContent.asInstanceOf[String]</pre>
+	}
+}
