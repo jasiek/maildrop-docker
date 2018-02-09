@@ -8,7 +8,8 @@ RUN echo 'addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")' > project/as
 RUN sbt assembly
 WORKDIR /maildrop/maildrop-master/web
 RUN echo 'addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.13.0")' > project/assembly.sbt
-RUN chmod a+x activator && ./activator dist
+RUN chmod a+x activator
+RUN ./activator dist
 WORKDIR /maildrop
 
 # redis
