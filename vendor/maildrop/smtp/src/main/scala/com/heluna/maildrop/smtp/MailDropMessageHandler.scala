@@ -141,10 +141,7 @@ object MailDropMessageHandler extends LazyLogging {
 		for {
 			host <- HostEntry(inet, helo)
 			cache <- trySenderFilter(Continue(), { CacheFilter(host) })
-			greylist <- trySenderFilter(cache, { GreylistFilter(host, inet, helo) })
-			spf <- trySenderFilter(greylist, { SPFFilter(inet, helo, sender) })
-			dnsbl <- trySenderFilter(spf, { DNSBLFilter(inet, helo) })
-		} yield dnsbl
+		} yield cache
 	}
 
 	def trySenderFilter(prevResult: Product, filter: => Future[Product]): Future[Product] = {
@@ -175,9 +172,9 @@ object MailDropMessageHandler extends LazyLogging {
 
 	def saveMessage(sender: String, recipient: String, message: MimeMessage): Boolean = {
 		// Strip attachments from the message
-		val newmessage = stripAttachments(message)
+                // val newmessage = stripAttachments(message)
 		val baos = new ByteArrayOutputStream()
-		newmessage.writeTo(baos)
+		message.writeTo(baos)
 		// Add the message to the mailbox
 		Mailbox.add(sender, recipient, Option(message.getSubject).getOrElse("(no subject)"), Option(message.getSentDate).getOrElse(new Date()), baos.toString("UTF-8"))
 		true
