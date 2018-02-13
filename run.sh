@@ -7,7 +7,7 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
-java -jar ./maildrop-master/smtp/target/scala-2.10/smtp-assembly-2.0.jar &
+java -jar /maildrop/smtp-assembly-2.0.jar &
 status=$?
 
 if [ $status -ne 0 ]; then
@@ -15,5 +15,6 @@ if [ $status -ne 0 ]; then
     exit $status
 fi
 
-cd maildrop-master/web
-./activator start
+cd /maildrop/web-2.0/bin
+./web
+
